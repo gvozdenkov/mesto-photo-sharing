@@ -1,6 +1,4 @@
-import {
-  Request, Response, NextFunction,
-} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import Card from '../models/card';
 import BadRequestError from '../errors/bad-request-error';
 import NotFoundError from '../errors/not-found-error';
@@ -34,15 +32,16 @@ const deleteCard = (req: Request, res: Response, next: NextFunction) => {
       if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Нельзя удалить чужую карточку');
       } else {
-        return Card.deleteOne({ _id: card._id })
-          .then(() => res.send(card));
+        return Card.deleteOne({ _id: card._id }).then(() => res.send(card));
       }
     })
     .catch(next);
 };
 
 const updateLike = (req: Request, res: Response, next: NextFunction, method: string) => {
-  const { params: { id } } = req;
+  const {
+    params: { id },
+  } = req;
   Card.findByIdAndUpdate(id, { [method]: { likes: req.user._id } }, { new: true })
     .orFail(() => new NotFoundError('Нет карточки по заданному id'))
     .then((card) => {
@@ -51,14 +50,10 @@ const updateLike = (req: Request, res: Response, next: NextFunction, method: str
     .catch(next);
 };
 
-const likeCard = (req: Request, res: Response, next: NextFunction) => updateLike(req, res, next, '$addToSet');
+const likeCard = (req: Request, res: Response, next: NextFunction) =>
+  updateLike(req, res, next, '$addToSet');
 
-const dislikeCard = (req: Request, res: Response, next: NextFunction) => updateLike(req, res, next, '$pull');
+const dislikeCard = (req: Request, res: Response, next: NextFunction) =>
+  updateLike(req, res, next, '$pull');
 
-export {
-  getCards,
-  createCard,
-  deleteCard,
-  likeCard,
-  dislikeCard,
-};
+export { getCards, createCard, deleteCard, likeCard, dislikeCard };

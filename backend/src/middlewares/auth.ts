@@ -4,7 +4,7 @@ import { JWT_SECRET } from '../config';
 import UnauthorizedError from '../errors/unauthorized-error';
 
 interface JwtPayload {
-  _id: string
+  _id: string;
 }
 
 const auth = (req: Request, res: Response, next: NextFunction) => {
